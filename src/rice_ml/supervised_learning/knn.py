@@ -33,7 +33,7 @@ Basic regression:
 >>> y = np.array([0.0, 1.0, 1.5, 3.0])
 >>> reg = KNNRegressor(n_neighbors=2, weights="distance").fit(X, y)
 >>> round(reg.predict([[1.5]])[0], 4)
-1.25
+np.float64(1.25)
 """
 
 from __future__ import annotations
@@ -448,7 +448,7 @@ class KNNRegressor(_KNNBase):
     >>> X = np.array([[0],[1],[2],[3]], dtype=float)
     >>> y = np.array([0.0, 1.0, 1.5, 3.0])
     >>> reg = KNNRegressor(n_neighbors=2, weights="distance").fit(X, y)
-    >>> round(reg.predict([[1.5]])[0], 4)
+    >>> round(float(reg.predict([[1.5]])[0]), 4)
     1.25
     """
 
@@ -518,18 +518,31 @@ class KNNRegressor(_KNNBase):
         Raises
         ------
         ValueError
-            If y is constant and predictions are not perfect.
+            - If y is constant and you're not scoring on the exact training inputs.
+            - If y is constant and predictions are not perfect.
         """
+        X_train, _ = self._check_is_fitted()
+        Xq = _ensure_2d_float(X, "X")
         y_true = np.asarray(_ensure_1d(y, "y"), dtype=float)
-        y_pred = self.predict(X)
-        if len(y_true) != len(y_pred):
+
+        if Xq.shape[0] != y_true.shape[0]:
             raise ValueError("X and y lengths do not match.")
-        # R^2
+
+        y_pred = self.predict(Xq)
+
         ss_res = np.sum((y_true - y_pred) ** 2)
         y_mean = np.mean(y_true)
         ss_tot = np.sum((y_true - y_mean) ** 2)
+
         if ss_tot == 0:
-            if ss_res == 0:
+            # y_true is constant.
+            # Allow a well-defined perfect score ONLY when evaluating exactly on the
+            # training inputs and predictions are perfect. Otherwise raise.
+            if np.array_equal(Xq, X_train) and ss_res == 0:
                 return 1.0
-            raise ValueError("R^2 undefined for constant y_true when predictions are not perfect.")
+            raise ValueError(
+                "R^2 is undefined when y_true is constant unless scoring on the "
+                "training inputs with a perfect fit."
+            )
+
         return float(1.0 - ss_res / ss_tot)
