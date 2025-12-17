@@ -1,6 +1,7 @@
 import numpy as np
 
-from rice_ml.unsupervised_learning.community_detection import community_detection
+from rice_ml.unsupervised_learning.community_detection import GraphCommunityDetection
+
 
 
 def test_community_detection_returns_labels():
@@ -14,6 +15,6 @@ def test_community_detection_returns_labels():
         [0,0,0,1,1,0],
     ], dtype=int)
 
-    labels = community_detection(A)
+    labels = GraphCommunityDetection(A)
     assert len(labels) == A.shape[0]
     assert np.issubdtype(np.asarray(labels).dtype, np.integer)
