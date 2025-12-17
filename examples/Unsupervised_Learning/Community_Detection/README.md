@@ -5,8 +5,18 @@ in unsupervised learning.
 
 ## Algorithm
 
-_TODO: Describe the core idea of Community Detection, its objective, and key hyperparameters._
+Community detection treats the dataset as a graph:
+- nodes represent data points
+- edges connect points based on a similarity rule (e.g., distance threshold or k-nearest graph)
+A community detection algorithm then finds groups of nodes that are more densely connected to each other
+than to the rest of the graph.
+
+Key hyperparameters depend on the graph construction:
+- distance threshold or number of neighbors
+- similarity/distance metric
 
 ## Data
 
-_TODO: Describe the input features, labels (if any), and how datasets are loaded or preprocessed for Community Detection._
+We use coordinate-based features from `lesions_processed.csv` to build a graph of lesion points.
+No labels are used to construct communities, but the notebook may compare community membership
+to `tampered` or `experiment` afterward to interpret structure.
