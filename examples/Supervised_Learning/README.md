@@ -1,10 +1,25 @@
-# Supervised Learning
+# Supervised Learning Examples
 
-Supervised learning refers to machine learning tasks where each example comes
-with an associated label or target value. The goal is to learn a mapping from
-inputs (features) to outputs (labels) so that the model can make accurate
-predictions on new, unseen data.
+Supervised learning uses labeled data `(X, y)` to learn a function that predicts `y` from `X`.
 
-This directory contains examples of common supervised learning algorithms
-for both regression and classification, such as linear and logistic regression,
-decision trees, k-nearest neighbors, ensemble methods, and neural networks.
+In this project, we treat tampering detection as a binary classification task:
+- `y = tampered ∈ {0,1}`
+- Features are derived from lesion coordinates and experiment condition.
+
+## Shared Feature Set Used Across Most Notebooks
+
+- `x_norm`, `y_norm`, `slice_norm` (normalized coordinates)
+- `r_xy` (distance from image center in xy plane)
+- `experiment` (1 = blind, 2 = open)
+
+## Algorithms
+
+- Logistic Regression
+- KNN
+- Perceptron
+- Multilayer Perceptron (MLP)
+- Decision Trees
+- Regression Trees
+- Ensemble Methods
+
+Each subfolder contains a notebook with results and plots.

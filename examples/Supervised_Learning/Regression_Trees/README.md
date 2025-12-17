@@ -5,8 +5,22 @@ in supervised learning.
 
 ## Algorithm
 
-_TODO: Describe the core idea of Regression Trees, its objective, and key hyperparameters._
+A Regression Tree is similar to a decision tree but predicts a continuous value at each leaf,
+typically the mean of target values in that leaf. The tree chooses splits that reduce a regression
+loss (e.g., variance / squared error).
+
+Key hyperparameters:
+- max_depth
+- min_samples_split
+- min_samples_leaf
 
 ## Data
 
-_TODO: Describe the input features, labels (if any), and how datasets are loaded or preprocessed for Regression Trees._
+We use `lesions_processed.csv`. Although `tampered` is binary (0/1), in this notebook it is treated
+as a numeric target so the regression tree outputs a score in [0,1] (often near 0 or 1).
+We can threshold predictions at 0.5 to convert back to a class prediction.
+
+Features:
+- x_norm, y_norm, slice_norm
+- r_xy
+- experiment

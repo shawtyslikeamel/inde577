@@ -38,6 +38,8 @@ class BaggingTreeClassifier:
     ----------
     estimators_ : list
         List of fitted DecisionTreeClassifier objects.
+    rng_ : np.random.Generator
+        Random number generator instance (stored for reproducibility).
     """
 
     def __init__(
@@ -55,6 +57,7 @@ class BaggingTreeClassifier:
         self.max_features = max_features
         self.random_state = random_state
         self.estimators_: list[DecisionTreeClassifier] = []
+        self.rng_ = np.random.default_rng(self.random_state)
 
     def fit(self, X: np.ndarray, y: np.ndarray) -> "BaggingTreeClassifier":
         X = np.asarray(X, dtype=float)
@@ -67,18 +70,28 @@ class BaggingTreeClassifier:
         if X.shape[0] != y.shape[0]:
             raise ValueError("X and y must have the same number of rows.")
 
-        rng = np.random.default_rng(self.random_state)
+        #Reset RNG before fitting (ensures reproducibility on refit)
+        self.rng_ = np.random.default_rng(self.random_state)
+        
         n = X.shape[0]
         self.estimators_ = []
 
         for _ in range(self.n_estimators):
-            # Bootstrap sample
-            idx = rng.integers(0, n, size=n)
+            # Bootstrap sample - use self.rng_ not a new generator
+            idx = self.rng_.integers(0, n, size=n)
+            
+            d = X.shape[1]
+            max_feats = self.max_features
+            if max_feats is None:
+                max_feats = 1  # ensures feature subsampling even when d=2
+
             tree = DecisionTreeClassifier(
                 max_depth=self.max_depth,
-                max_features=self.max_features,
-                random_state=int(rng.integers(0, 1_000_000_000)),
+                max_features=max_feats,
+                #Use self.rng_ to generate child seeds
+                random_state=int(self.rng_.integers(0, 1_000_000_000)),
             )
+
             tree.fit(X[idx], y[idx])
             self.estimators_.append(tree)
 

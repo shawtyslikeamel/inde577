@@ -5,8 +5,22 @@ in supervised learning.
 
 ## Algorithm
 
-_TODO: Describe the core idea of Decision Trees, its objective, and key hyperparameters._
+A Decision Tree classifier recursively splits the feature space using thresholds on features
+to reduce impurity (here, Gini impurity). Each internal node chooses a feature and threshold;
+each leaf outputs class probabilities based on the training labels in that region.
+
+Key hyperparameters:
+- max_depth
+- min_samples_split
+- min_samples_leaf
+- max_features (if implemented)
 
 ## Data
 
-_TODO: Describe the input features, labels (if any), and how datasets are loaded or preprocessed for Decision Trees._
+We use `lesions_processed.csv` with binary label `tampered`.
+Features used include:
+- x_norm, y_norm, slice_norm
+- r_xy
+- experiment
+
+The notebook loads the dataset, splits into train/test, fits the tree, and evaluates predictions.

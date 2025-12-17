@@ -23,9 +23,10 @@ class LinearRegression:
         Learned bias term.
     """
 
-    def __init__(self):
+    def __init__(self, lr=None, epochs=None, random_state=None):
         self.coef_ = None
         self.intercept_ = None
+
 
     def fit(self, X, y):
         X = np.asarray(X, dtype=float)
