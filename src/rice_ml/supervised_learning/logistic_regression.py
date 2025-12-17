@@ -9,10 +9,12 @@ class LogisticRegressionGD:
     - y: numpy array of shape (n_samples,) with labels 0 or 1
     """
 
-    def __init__(self, lr: float = 0.1, n_iters: int = 1000):
+    def __init__(self, lr: float = 0.1, n_iters: int = 1000, random_state=None):
         self.lr = lr
         self.n_iters = n_iters
-        self.weights_ = None  # will include bias as first element
+        self.random_state = random_state
+        self.weights_ = None
+
 
     @staticmethod
     def _sigmoid(z):

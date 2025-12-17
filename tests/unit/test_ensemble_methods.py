@@ -42,18 +42,46 @@ def test_not_fitted_raises():
 
 
 def test_reproducibility_with_random_state():
-    X, y = make_toy_data()
-
-    m1 = BaggingTreeClassifier(n_estimators=10, max_depth=4, random_state=42).fit(X, y)
-    m2 = BaggingTreeClassifier(n_estimators=10, max_depth=4, random_state=42).fit(X, y)
-    m3 = BaggingTreeClassifier(n_estimators=10, max_depth=4, random_state=43).fit(X, y)
-
+    """Test random_state reproducibility with more features."""
+    # Create dataset with MORE features to increase randomness
+    rng = np.random.default_rng(0)
+    n_samples = 500
+    n_features = 10  
+    
+    X = rng.normal(size=(n_samples, n_features))
+    # Make a more complex decision boundary
+    y = (X[:, 0] + X[:, 1] - X[:, 2] + 0.5 * X[:, 3] > 0).astype(int)
+    
+    m1 = BaggingTreeClassifier(
+        n_estimators=20,
+        max_depth=6,
+        max_features=3, 
+        random_state=42
+    ).fit(X, y)
+    
+    m2 = BaggingTreeClassifier(
+        n_estimators=20,
+        max_depth=6,
+        max_features=3,
+        random_state=42
+    ).fit(X, y)
+    
+    m3 = BaggingTreeClassifier(
+        n_estimators=20,
+        max_depth=6,
+        max_features=3,
+        random_state=43
+    ).fit(X, y)
+    
     p1 = m1.predict(X)
     p2 = m2.predict(X)
     p3 = m3.predict(X)
-
-    # Same seed => identical predictions (should be deterministic)
-    assert np.array_equal(p1, p2)
-
-    # Different seed => very likely different predictions (allow tiny chance of equality)
-    assert not np.array_equal(p1, p3)
+    
+    # Same seed = same predictions
+    assert np.array_equal(p1, p2), "Same seed should give same predictions"
+    
+    # Different seed = different predictions
+    n_diff = np.sum(p1 != p3)
+    print(f"Predictions differ on {n_diff}/{len(X)} samples ({100*n_diff/len(X):.1f}%)")
+    
+    assert n_diff > len(X) * 0.01, f"Only {n_diff} predictions differ - not enough randomness!"

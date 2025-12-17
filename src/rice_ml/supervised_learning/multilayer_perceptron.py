@@ -37,16 +37,27 @@ class MLPBinaryClassifier:
     W1, b1, W2, b2 : learned parameters
     """
 
-    def __init__(self, hidden_units: int = 8, lr: float = 0.1, n_epochs: int = 300, random_state: int | None = None):
+    def __init__(
+        self,
+        hidden_units: int = 8,
+        *,
+        hidden_layer_sizes=None,
+        lr: float = 0.1,
+        epochs: int | None = None,
+        n_epochs: int = 300,
+        random_state: int | None = None,
+    ):
+        if hidden_layer_sizes is not None:
+            hidden_units = hidden_layer_sizes[0]
+
+        if epochs is not None:
+            n_epochs = epochs
+
         self.hidden_units = hidden_units
         self.lr = lr
         self.n_epochs = n_epochs
         self.random_state = random_state
 
-        self.W1 = None
-        self.b1 = None
-        self.W2 = None
-        self.b2 = None
 
     def fit(self, X, y):
         X = np.asarray(X, dtype=float)
