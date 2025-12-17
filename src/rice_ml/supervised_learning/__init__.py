@@ -13,5 +13,3 @@ from .linear_regression import LinearRegression
 
 
 __all__ = ["LogisticRegressionGD", "KNNClassifier", "KNNRegressor", "DecisionTreeClassifier", "RegressionTreeRegressor", "euclidean_distance", "manhattan_distance", "BaggingTreeClassifier", "Perceptron", "MLPBinaryClassifier", "LinearRegression"]
-
-
